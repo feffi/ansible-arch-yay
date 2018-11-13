@@ -2,7 +2,14 @@
 - hosts: 127.0.0.1
   connection: local
   vars:
-    ansible_inxi:
-      options: "-Ffmns --slots --usb"
+    ansible_arch_yay:
+      # The yay git source repository
+      git: "https://aur.archlinux.org/yay.git"
+      # The owner of the repository
+      owner:
+        name: "feffi"
+        group: "feffi"
+      # Destination to clone yay to
+      dest: "/home/feffi/yay"
   roles:
     - { role: ansible-inxi }
