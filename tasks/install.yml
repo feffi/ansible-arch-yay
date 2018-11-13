@@ -1,0 +1,27 @@
+---
+- name: "Clone yay AUR helper source git repository to {{ ansible_yay.dest }}"
+  git:
+    repo: "{{ ansible_yay.git }}"
+    dest: "{{ ansible_yay.dest }}"
+    force: true
+
+- name: "Set access rights to {{ ansible_yay.owner.name }}:{{ ansible_yay.owner.group }}"
+  file:
+    path: "{{ ansible_yay.dest }}"
+    state: directory
+    mode: 0700
+    owner: "{{ ansible_yay.owner.name }}"
+    group: "{{ ansible_yay.owner.group }}"
+    recurse: true
+
+- name: Install required dependecies
+  pacman:
+    name: "binutils go base-devel"
+    state: present
+
+- name: "MAKEPKG yay AUR helper as {{ ansible_yay.owner }}"
+  shell: "makepkg -si --noconfirm > ./makepkg-yay.log"
+  become: yes
+  become_user: "{{ ansible_yay.owner.name }}"
+  args:
+    chdir: "{{ ansible_yay.dest }}"
